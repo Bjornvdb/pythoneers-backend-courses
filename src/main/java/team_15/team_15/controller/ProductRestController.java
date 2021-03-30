@@ -2,6 +2,8 @@ package team_15.team_15.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import team_15.team_15.model.Product;
@@ -9,6 +11,8 @@ import team_15.team_15.service.ProductService;
 import team_15.team_15.service.ServiceException;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,7 +22,7 @@ public class ProductRestController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/")
+    @GetMapping()
     public Iterable<Product> getAll() {
         return productService.getAll();
     }
@@ -28,7 +32,7 @@ public class ProductRestController {
         return productService.findById(id);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public Iterable<Product> addBus(@Valid @RequestBody Product product) {
         try {
             productService.add(product);
@@ -37,5 +41,38 @@ public class ProductRestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name", exc);
         }
         return productService.getAll();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteProduct(@PathVariable("id") long id) {
+        productService.deleteById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public void updateProduct(@PathVariable("id") long id, @Valid @RequestBody Product product) {
+        try {
+            productService.deleteById(id);
+            productService.add(product);
+        }
+        catch (ServiceException exc) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name", exc);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentNotValidException.class, ResponseStatusException.class})
+    public Map<String, String> handleValidationExceptions(Exception ex) {
+        Map<String, String> errors = new HashMap<>();
+        if (ex instanceof MethodArgumentNotValidException) {
+            ((MethodArgumentNotValidException)ex).getBindingResult().getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+        }
+        else {
+            errors.put(((ResponseStatusException)ex).getReason(), ex.getCause().getMessage());
+        }
+        return errors;
     }
 }
