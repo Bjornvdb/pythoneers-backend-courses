@@ -12,13 +12,4 @@ public class Team15Application {
         SpringApplication.run(Team15Application.class, args);
     }
 
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }
-
 }
