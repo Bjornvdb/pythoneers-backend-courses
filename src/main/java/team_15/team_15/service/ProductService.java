@@ -18,7 +18,7 @@ public class ProductService {
     }
 
     public void add(Product product) throws ServiceException {
-        if (productRepository.findByName(product.getName()) != null) throw new ServiceException("Product already in database");
+        if (productRepository.findByName(product.getTitle()) != null) throw new ServiceException("Product already in database");
         productRepository.save(product);
     }
 
@@ -33,7 +33,7 @@ public class ProductService {
     public void update(Product product) throws ServiceException {
         if (product == null) throw new ServiceException("Invalid product id");
 
-        Product productByName = productRepository.findByName(product.getName());
+        Product productByName = productRepository.findByName(product.getTitle());
         if (productByName != null && productByName.getId() != product.getId()) throw new ServiceException("Product already in database");
 
         productRepository.save(product);
