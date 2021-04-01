@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin( origins = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/products")
 public class ProductRestController {
