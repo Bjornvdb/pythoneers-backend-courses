@@ -7,5 +7,5 @@ import team_15.team_15.model.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Product findByName(String name);
+    Product findByTitle(String title);
 }
