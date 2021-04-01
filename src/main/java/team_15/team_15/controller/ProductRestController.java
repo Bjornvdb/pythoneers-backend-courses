@@ -2,6 +2,8 @@ package team_15.team_15.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin( origins = "http://localhost:8080", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/products")
 public class ProductRestController {
@@ -23,7 +26,7 @@ public class ProductRestController {
     private ProductService productService;
 
     @GetMapping()
-    public Iterable<Product> getAll() {
+    public Iterable<Product> getAllProducts() {
         return productService.getAll();
     }
 
@@ -33,26 +36,61 @@ public class ProductRestController {
     }
 
     @PostMapping()
-    public Iterable<Product> addBus(@Valid @RequestBody Product product) {
+    public String addProduct(@Valid @RequestBody Product product, @AuthenticationPrincipal Jwt accessToken) {
         try {
-            productService.add(product);
+            String scope = accessToken.getClaims().get("scope").toString();
+            boolean partnerRole = scope.contains("partner");
+
+            if (partnerRole) {
+                System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString());
+                System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString().contains("partner"));
+                
+                productService.add(product);
+                
+                return "Product added";
+            } else {
+                return "Not Authorized to add product";
+            }
         }
         catch (ServiceException exc) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name", exc);
         }
-        return productService.getAll();
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteProduct(@PathVariable("id") long id) {
-        productService.deleteById(id);
+    public String deleteProduct(@PathVariable("id") long id, @AuthenticationPrincipal Jwt accessToken) {
+        String scope = accessToken.getClaims().get("scope").toString();
+        boolean partnerRole = scope.contains("partner");
+
+        if (partnerRole) {
+            System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString());
+            System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString().contains("partner"));
+            
+            productService.deleteById(id);
+            
+            return "Product deleted";
+        } else {
+            return "Not Authorized to delete product";
+        }
     }
 
     @PutMapping("/update/{id}")
-    public void updateProduct(@PathVariable("id") long id, @Valid @RequestBody Product product) {
+    public String updateProduct(@PathVariable("id") long id, @Valid @RequestBody Product product, @AuthenticationPrincipal Jwt accessToken) {
         try {
-            productService.deleteById(id);
-            productService.add(product);
+            String scope = accessToken.getClaims().get("scope").toString();
+            boolean partnerRole = scope.contains("partner");
+
+            if (partnerRole) {
+                System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString());
+                System.out.println("Contains sequence 'partner': " + accessToken.getClaims().get("scope").toString().contains("partner"));
+                
+                productService.deleteById(id);
+                productService.add(product);
+                
+                return "Product updated";
+            } else {
+                return "Not Authorized to update product";
+            }
         }
         catch (ServiceException exc) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name", exc);
