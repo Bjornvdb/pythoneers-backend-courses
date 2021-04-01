@@ -23,15 +23,15 @@ public class Product {
         this.id = id;
     }
 
-    @NotBlank(message = "Name is mandatory")
-    private String name;
+    @NotBlank(message = "Title is mandatory")
+    private String title;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @NotBlank(message = "Description is mandatory")
@@ -45,40 +45,42 @@ public class Product {
         this.description = description;
     }
 
+    @NotBlank(message = "Thumbnail URL is mandatory")
+    private String thumbnail_url;
+
+    public String getThumbnail_url() {
+        return thumbnail_url;
+    }
+
+    public void setThumbnail_url(String thumbnail_url) {
+        this.thumbnail_url = thumbnail_url;
+    }
+
+    @NotNull(message = "Quantity is mandatory")
+    @Min(value=0, message = "Quantity must be positive")
+    private Integer quantity;
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     @NotNull(message = "Price is mandatory")
     @Min(value=0, message = "Price must be positive")
-    private Double price;
+    private Float price;
 
-    public Double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 
-    @NotNull(message = "Stock is mandatory")
-    @Min(value=0, message = "Stock must be positive")
-    private Integer stock;
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    private String img;
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
+    @NotNull(message = "Origin is mandatory")
     private String origin;
 
     public String getOrigin() {
