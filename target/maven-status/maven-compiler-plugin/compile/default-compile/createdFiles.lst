@@ -1,8 +1,8 @@
 team_15\team_15\model\Product.class
 team_15\team_15\controller\HomeController.class
 team_15\team_15\db\ProductRepository.class
-team_15\team_15\Team15Application.class
 team_15\team_15\controller\ProductController.class
+team_15\team_15\Team15Application.class
 team_15\team_15\controller\ProductRestController.class
 team_15\team_15\service\ProductService.class
 team_15\team_15\service\ServiceException.class
